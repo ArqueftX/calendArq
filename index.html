@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>CalendArq - Calendrier de l'Avent Twitch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+  :root {
+    --bg: #050816;
+    --bg-card: #111827;
+    --bg-card-open: #1f2937;
+    --accent: #8b5cf6;
+    --accent-soft: rgba(139, 92, 246, 0.18);
+    --text: #f9fafb;
+    --muted: #d1d5db;
+    --border: #1f2937;
+    --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.45);
+    --radius-lg: 1.2rem;
+    --transition-fast: 180ms ease-out;
+    --transition-slow: 240ms ease-out;
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-main);
+    background:
+      radial-gradient(circle at top left, #1e293b 0, transparent 55%),
+      radial-gradient(circle at top right, #0f172a 0, transparent 55%),
+      radial-gradient(circle at bottom, #020617 0, #000 65%);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.88));
+    border-radius: 1.5rem;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: var(--shadow-soft);
+    padding: 1.5rem 1.8rem 2.2rem;
+    backdrop-filter: blur(18px);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .bg-tree {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.75;
+    filter: drop-shadow(0 0 6px rgba(139,92,246,0.8));
+    transform-origin: center;
+  }
+
+  .bg-tree.secret-tree {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 850px;
+    margin: 0 auto;
+  }
+
+  .description-block {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .logo-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-img {
+    height: 52px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  h1 {
+    font-size: clamp(1.7rem, 2.5vw, 2.1rem);
+    margin: 0;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  h1 span.highlight {
+    color: var(--accent);
+  }
+
+  .info-box {
+    min-width: 220px;
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .info-wrapper {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1.2rem;
+    width: 100%;
+  }
+
+  .info-wrapper .info-box {
+    flex: 1 1 300px;
+    max-width: 380px;
+  }
+  
+  .info-label {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+
+  .info-explanation .info-text,
+  .info-lottery .info-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .calendar-header-title {
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .calendar-header-badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(139, 92, 246, 0.6);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    align-items: center;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(148,163,184,0.9);
+    border: none;
+  }
+
+  .legend-dot.special {
+    background: var(--accent-soft);
+  }
+
+  .legend-dot.opened {
+    background: #22c55e;
+    box-shadow: none;
+  }
+
+  .calendar {
+    margin-top: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .day-card {
+    position: relative;
+    background: radial-gradient(circle at 20% 0%, #111827 0, var(--bg-card) 55%);
+    border-radius: var(--radius-lg);
+    padding: 0.9rem 0.9rem 0.8rem;
+    border: 1px solid rgba(75, 85, 99, 0.7);
+    cursor: pointer;
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast),
+                border-color var(--transition-fast),
+                background var(--transition-slow);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    min-height: 110px;
+    overflow: hidden;
+    color: var(--text);
+  }
+
+  .day-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0 0, rgba(139, 92, 246, 0.35), transparent 55%);
+    opacity: 0;
+    transition: opacity var(--transition-slow);
+    pointer-events: none;
+  }
+
+  .day-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    border-color: rgba(139, 92, 246, 0.8);
+  }
+
+  .day-card:hover::before {
+    opacity: 1;
+  }
+
+  .day-card.opened {
+    background: #312e81;
+    border-color: rgba(191, 219, 254, 0.9);
+    transform: translateY(-1px);
+  }
+
+  .day-card.opened::before {
+    opacity: 0;
+  }
+
+  .day-card.locked {
+    cursor: not-allowed;
+    opacity: 0.6;
+    border-style: dashed;
+  }
+
+  .day-card.locked:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: rgba(148,163,184,0.5);
+  }
+
+  .day-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0.4rem;
+  }
+
+  .day-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .day-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.18rem 0.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    color: var(--muted);
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .day-card.special .day-tag {
+    border-color: rgba(139, 92, 246, 0.9);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .day-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.15rem;
+    text-align: left;
+    color: var(--text);
+  }
+
+  .day-footer {
+    margin-top: 0.45rem;
+    font-size: 0.77rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .dot-pill {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.9);
+  }
+
+  .day-card.special .dot-pill {
+    background: var(--accent);
+  }
+
+  .day-card.opened .dot-pill {
+    background: #22c55e;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.97);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 1.2rem;
+    z-index: 50;
+  }
+
+  .modal-backdrop.visible {
+    display: flex;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 500px;
+    background: radial-gradient(circle at 0 0, rgba(139, 92, 246, 0.12), #020617);
+    border-radius: 1.3rem;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    padding: 1.4rem 1.4rem 1.1rem;
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.7);
+    position: relative;
+    color: var(--text);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .modal-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .modal-day-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .modal-tag {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    color: var(--muted);
+    align-self: flex-start;
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .modal-tag.special {
+    border-color: rgba(139, 92, 246, 0.9);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .modal-close {
+    position: absolute;
+    right: 0.7rem;
+    top: 0.6rem;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 999px;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .modal-close:hover {
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--text);
+  }
+
+  .modal-body {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 0.9rem;
+  }
+
+  .modal-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: #f9fafb;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.45);
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
+
+  .modal-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  footer.app-footer {
+    margin-top: 1.2rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-align: right;
+  }
+
+  footer.app-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer.app-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .social-footer {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+  }
+
+  .social-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #f9fafb;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: 0.2s ease;
+  }
+
+  .social-btn svg {
+    display: block;
+  }
+
+  .social-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 18px rgba(0,0,0,0.6);
+  }
+
+  .social-btn.youtube:hover { background: #ff0000cc; }
+  .social-btn.twitch:hover  { background: #9146ffcc; }
+  .social-btn.twitter:hover { background: #1da1f2cc; }
+  .social-btn.discord:hover { background: #5865f2cc; }
+
+  @media (max-width: 600px) {
+    .app {
+      padding: 1.15rem 1rem 1.6rem;
+    }
+
+    .calendar-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .day-card {
+      min-height: 105px;
+    }
+  }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-center">
+        <div class="title-block">
+          <div class="logo-row">
+            <img src="logo-arq.png" alt="Logo Arqueftx" class="logo-img" />
+            <h1>
+              Calend<span class="highlight">Arq</span>
+            </h1>
+          </div>
+        </div>
+        <div class="description-block">
+          Calendrier de l'Avent spécial Twitch : chaque jour, découvre en cliquant sur la case le jeu qui sera streamé en live.
+          Le 24, un tirage au sort permettra à un·e follower de gagner un jeu d’une valeur d’environ 50€ 🎁
+        </div>
+      </div>
+
+      <div class="info-wrapper">
+        <div class="info-box info-explanation">
+          <div class="info-label">Comment ça marche ?</div>
+          <div class="info-text">
+            Clique chaque jour sur la case correspondante pour découvrir le jeu (ou la surprise) du calendrier.
+          </div>
+        </div>
+
+        <div class="info-box info-lottery">
+          <div class="info-label">Tirage au sort du 24</div>
+          <div class="info-text">
+            Pour participer, il suffit d’utiliser une fois le Power-Up dédié (<strong>20 000 points de chaîne</strong>).
+            Une seule utilisation suffit : l’activer plusieurs fois ne donne pas plus de chances.
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="calendar-header">
+        <div class="calendar-header-title">
+          Calendrier de l'Avent
+          <span class="calendar-header-badge">1 → 24 décembre</span>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-dot"></span> Case fermée
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot special"></span> Case spéciale (24&nbsp;: tirage au sort)
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot opened"></span> Case déjà ouverte
+          </div>
+        </div>
+      </div>
+
+      <section id="calendar" class="calendar" aria-label="Calendrier de l'Avent">
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      CalendArq – calendrier de l'Avent pour streams Twitch.
+    </footer>
+
+    <div class="social-footer">
+      <a href="https://www.youtube.com/@arqueftx" class="social-btn youtube" target="_blank" aria-label="YouTube">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.6 3.2H4.4A4.4 4.4 0 0 0 0 7.6v8.8a4.4 4.4 0 0 0 4.4 4.4h15.2a4.4 4.4 0 0 0 4.4-4.4V7.6a4.4 4.4 0 0 0-4.4-4.4zM9.6 15.6V8.4l6.4 3.6-6.4 3.6z"/>
+        </svg>
+      </a>
+
+      <a href="https://www.twitch.tv/arqueftx" class="social-btn twitch" target="_blank" aria-label="Twitch">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 2L2 6v14h6v2h4l2-2h4l4-4V2H4zm16 12l-2 2h-4l-2 2v-2H8V4h12v10zM14 6h2v5h-2V6zm-4 0h2v5H10V6z"/>
+        </svg>
+      </a>
+
+      <a href="https://twitter.com/arqueftx" class="social-btn twitter" target="_blank" aria-label="X">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2H21.5l-7.78 8.89L23 22h-5.632l-6.17-7.748L4.53 22H1.27l8.29-9.472L1 2h5.741l5.497 7.09L18.244 2z"/>
+        </svg>
+      </a>
+
+      <a href="https://discord.gg/arqueftx" class="social-btn discord" target="_blank" aria-label="Discord">
+        <svg width="26" height="26" viewBox="0 0 245 240" fill="currentColor">
+          <path d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zm36.2 0c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"/>
+          <path d="M189.5 20h-134C24.3 20 7 37.3 7 58.4v107.3c0 21.1 17.3 38.4 38.5 38.4h113.7l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V58.4c0-21.1-17.3-38.4-38.8-38.4zm-39.6 135s-3.7-4.4-6.8-8.3c13.5-3.8 18.6-12.1 18.6-12.1-4.2 2.8-8.2 4.8-11.8 6.1-5.1 2.1-9.9 3.5-14.7 4.3-9.7 1.8-18.6 1.3-26.3-.1-5.8-1.1-10.8-2.6-15-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.5-.3-2.2-1.2-3.4-2-3.4-2s5 8.1 18.2 12c-3.1 3.9-6.9 8.5-6.9 8.5-22.8-.7-31.5-15.6-31.5-15.6 0-33.1 14.8-60 14.8-60 14.8-11.1 28.8-10.8 28.8-10.8l1 1.2c-18.5 5.3-27 13.3-27 13.3s2.3-1.3 6.1-3.1c11.1-4.9 19.8-6.2 23.4-6.5.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.6 0 0-8.1-7.7-25.4-12.9l1.4-1.6s14-.3 28.8 10.8c0 0 14.8 26.9 14.8 60 0 0-8.7 14.9-31.4 15.6z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Fermer la fenêtre">
+        ✕
+      </button>
+      <div class="modal-header">
+        <div class="modal-title-block">
+          <div class="modal-day-label" id="modal-day-label"></div>
+          <div class="modal-title" id="modal-title"></div>
+        </div>
+        <div class="modal-tag" id="modal-tag"></div>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <a id="modal-twitch-btn" class="btn-primary" href="#" target="_blank" rel="noopener noreferrer">
+          Voir le stream sur Twitch
+        </a>
+        <div class="modal-hint" id="modal-hint"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const calendarConfig = [
+      {
+        day: 1,
+        title: "Valiant Hearts: The Great War",
+        description:
+          "Soldats Inconnus : Mémoires de la Grande Guerre™ est un jeu d’aventure narratif qui suit le destin croisé de plusieurs personnages pendant la Première Guerre mondiale. " +
+          "Entre énigmes, infiltration et moments d’émotion, le jeu met l’accent sur les histoires humaines plutôt que sur l’action pure.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 2,
+        title: "Jeu du 2 décembre",
+        description: "Jeu à définir. Tu pourras modifier ce texte dans le code.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 3,
+        title: "Jeu du 3 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 4,
+        title: "Jeu du 4 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 5,
+        title: "Jeu du 5 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 6,
+        title: "Jeu du 6 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 7,
+        title: "Jeu du 7 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 8,
+        title: "Jeu du 8 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 9,
+        title: "Jeu du 9 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 10,
+        title: "Jeu du 10 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 11,
+        title: "Jeu du 11 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 12,
+        title: "Jeu du 12 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 13,
+        title: "Jeu du 13 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 14,
+        title: "Jeu du 14 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 15,
+        title: "Jeu du 15 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 16,
+        title: "Jeu du 16 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 17,
+        title: "Jeu du 17 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 18,
+        title: "Jeu du 18 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 19,
+        title: "Jeu du 19 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 20,
+        title: "Jeu du 20 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 21,
+        title: "Jeu du 21 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 22,
+        title: "Jeu du 22 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 23,
+        title: "Jeu du 23 décembre",
+        description: "Jeu à définir.",
+        twitchUrl: "https://www.twitch.tv/arqueftx"
+      },
+      {
+        day: 24,
+        title: "Case finale : Tirage au sort 🎁",
+        description:
+          "Le 24 décembre, ce ne sera pas un stream classique : ce sera le TAS d'un jeu d'une valeur d'environ 50 € " +
+          "offert pour les followers !\n\nReste connecté·e au live pour découvrir le jeu en question et comment " +
+          "tenter ta chance.",
+        twitchUrl: "https://www.twitch.tv/arqueftx",
+        special: true
+      }
+    ];
+
+    const today = new Date();
+    let currentDay;
+
+    if (today.getMonth() === 11) {
+      currentDay = Math.min(today.getDate(), 24);
+    } else {
+      currentDay = 24;
+    }
+
+    const calendarEl = document.getElementById("calendar");
+    const openedClass = "opened";
+    const STORAGE_KEY = "CalendArq_opened_days";
+    const SECRET_KEY = "CalendArq_secret_found";
+    
+    function loadOpenedDays() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter((d) => typeof d === "number" && d <= currentDay);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveOpenedDays(days) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+      } catch (e) {}
+    }
+
+    let openedDays = loadOpenedDays();
+
+    function createDayCard(entry) {
+      const isSpecial = Boolean(entry.special);
+      const isLocked = entry.day > currentDay;
+      const isRevealed = !isLocked && openedDays.includes(entry.day);
+      const displayTitle = isSpecial
+        ? entry.title
+        : (isRevealed ? entry.title : "Jeu caché");
+
+      const card = document.createElement("button");
+      card.className =
+        "day-card" +
+        (isSpecial ? " special" : "") +
+        (isLocked ? " locked" : "");
+      card.type = "button";
+      card.setAttribute("data-day", entry.day);
+
+      card.innerHTML = `
+        <div class="day-label-row">
+          <div class="day-number">${formatDate(entry.day)}</div>
+          <div class="day-tag">${isSpecial ? "Spécial" : "Jeu vidéo"}</div>
+        </div>
+        <div class="day-title">${displayTitle}</div>
+        <div class="day-footer">
+          <span class="dot-pill"></span>
+        </div>
+      `;
+
+      if (isLocked) {
+        card.title = `Cette case sera disponible le ${entry.day} décembre.`;
+      }
+
+      if (!isLocked && openedDays.includes(entry.day)) {
+        card.classList.add(openedClass);
+      }
+
+      card.addEventListener("click", () => {
+        if (isLocked) return;
+
+        if (!openedDays.includes(entry.day)) {
+          openedDays.push(entry.day);
+          saveOpenedDays(openedDays);
+        }
+
+        card.classList.add(openedClass);
+        openModal(entry);
+        const titleEl = card.querySelector(".day-title");
+        if (titleEl && !isSpecial) {
+          titleEl.textContent = entry.title;
+        }
+      });
+
+      return card;
+    }
+
+    function formatDate(day) {
+      if (day === 1) return "1er déc.";
+      return `${day} déc.`;
+    }
+    
+    function buildCalendar() {
+      calendarEl.innerHTML = "";
+      calendarConfig.forEach((entry) => {
+        const card = createDayCard(entry);
+        calendarEl.appendChild(card);
+      });
+    }
+
+    const modalBackdrop = document.getElementById("modal-backdrop");
+    const modalClose = document.getElementById("modal-close");
+    const modalTitleEl = document.getElementById("modal-title");
+    const modalDayLabelEl = document.getElementById("modal-day-label");
+    const modalTagEl = document.getElementById("modal-tag");
+    const modalBodyEl = document.getElementById("modal-body");
+    const modalHintEl = document.getElementById("modal-hint");
+    const modalTwitchBtn = document.getElementById("modal-twitch-btn");
+
+    function openModal(entry) {
+      const isSpecial = Boolean(entry.special);
+
+      modalDayLabelEl.textContent = `Case du ${entry.day} décembre`;
+      modalTitleEl.textContent = entry.title;
+      modalTagEl.textContent = isSpecial ? "Tirage au sort" : "Jeu du stream";
+      modalTagEl.classList.toggle("special", isSpecial);
+
+      modalBodyEl.innerHTML = (entry.description || "Informations à venir.")
+        .replace(/\n/g, "<br>");
+
+      modalTwitchBtn.href = entry.twitchUrl || "#";
+      modalTwitchBtn.style.display = entry.twitchUrl ? "inline-flex" : "none";
+
+      modalHintEl.textContent = isSpecial
+        ? "Réserve cette case pour un moment fort avec la communauté. 🎄"
+        : "Le jeu prévu peut exceptionnellement changer jusqu'au lancement du live (imprévu, souci technique...). Tu peux revenir vérifier ici avant le stream pour voir si le jeu est toujours le même.";
+
+      modalBackdrop.classList.add("visible");
+      modalBackdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function openSecretPopup() {
+      modalDayLabelEl.textContent = "Sapin secret 🎄";
+      modalTitleEl.textContent = "Félicitations !";
+      modalTagEl.textContent = "Bonus caché";
+      modalTagEl.classList.add("special");
+
+      modalBodyEl.innerHTML = `
+        Tu viens de cliquer sur <strong>le sapin caché</strong> de CalendArq&nbsp;! 🎄<br><br>
+        Le premier viewer qui m’envoie un message privé sur Discord avec le code suivant :<br><br>
+        <strong style="font-size: 1.3rem;">SP09</strong><br><br>
+        (ou une capture d'écran de cette fenêtre)<br><br>
+        remportera <strong>un jeu d’une valeur de 20€</strong>.<br><br>
+        Dépêche-toi, seul le plus rapide gagne !
+      `;
+
+      modalTwitchBtn.href = "#";
+      modalTwitchBtn.style.display = "none";
+      modalHintEl.textContent = "";
+
+      modalBackdrop.classList.add("visible");
+      modalBackdrop.setAttribute("aria-hidden", "false");
+    }
+    
+    function closeModal() {
+      modalBackdrop.classList.remove("visible");
+      modalBackdrop.setAttribute("aria-hidden", "true");
+    }
+
+    modalClose.addEventListener("click", closeModal);
+
+    modalBackdrop.addEventListener("click", (event) => {
+      if (event.target === modalBackdrop) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    function generateBackgroundTrees() {
+      const treeCount = 26;
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+
+      const trees = [];
+
+      for (let i = 0; i < treeCount; i++) {
+        const tree = document.createElement("div");
+        tree.className = "bg-tree";
+        tree.textContent = "🎄";
+
+        const size = 22 + Math.random() * 30;
+        const rotation = -25 + Math.random() * 50;
+        const top = Math.random() * (docHeight - 100);
+
+        const side = Math.random() < 0.5 ? "left" : "right";
+        const horizontalOffset = Math.random() * 8;
+
+        tree.style.fontSize = size + "px";
+        tree.style.top = top + "px";
+        tree.style.transform = `rotate(${rotation}deg)`;
+
+        if (side === "left") {
+          tree.style.left = horizontalOffset + "vw";
+        } else {
+          tree.style.right = horizontalOffset + "vw";
+        }
+
+        document.body.appendChild(tree);
+        trees.push(tree);
+      }
+
+      if (trees.length > 0) {
+        const secretIndex = Math.floor(Math.random() * trees.length);
+        const secretTree = trees[secretIndex];
+
+        secretTree.classList.add("secret-tree");
+
+        secretTree.addEventListener("click", () => {
+          try {
+            localStorage.setItem(SECRET_KEY, "1");
+          } catch (e) {}
+          openSecretPopup();
+        });
+      }
+    }
+    
+    buildCalendar();
+    generateBackgroundTrees();
+  </script>
+</body>
+</html>

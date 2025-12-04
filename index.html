@@ -521,6 +521,23 @@
     text-decoration: underline;
   }
 
+  .reset-btn {
+    margin-top: 1.5rem;
+    background: #b91c1c;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+
+  .reset-btn:hover {
+    background: #dc2626;
+    transform: scale(1.03);
+  }
+
   @media (max-width: 600px) {
     .app {
       padding: 1.15rem 1rem 1.6rem;
@@ -599,8 +616,9 @@
     </main>
 
     <footer class="app-footer">
-      CalendArq – calendrier de l'Avent pour streams Twitch.
+      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.0</span>
     </footer>
+    <button id="resetCalendar" class="reset-btn">🔴 Réinitialiser les cases</button>
   </div>
   <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -1010,6 +1028,13 @@
     
     buildCalendar();
     generateBackgroundTrees();
+
+    document.getElementById("resetCalendar").addEventListener("click", () => {
+      if (confirm("⚠️ Voulez-vous vraiment réinitialiser toutes les cases ?")) {
+        localStorage.removeItem("CalendArq_opened_days");
+        location.reload();
+      }
+    });
   </script>
 </body>
 </html>

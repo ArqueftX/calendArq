@@ -538,6 +538,25 @@
     transform: scale(1.03);
   }
 
+  @keyframes shake-card {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-3px); }
+    40%  { transform: translateX(3px); }
+    60%  { transform: translateX(-2px); }
+    80%  { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+  }
+  
+  .day-card.d7-anim {
+    animation: shake-card 0.5s ease-in-out infinite;
+  }
+  
+  .day-card.d7-anim .day-number,
+  .day-card.d7-anim .day-title,
+  .day-card.d7-anim .day-tag {
+    filter: blur(4px);
+  }
+
   @media (max-width: 600px) {
     .app {
       padding: 1.15rem 1rem 1.6rem;
@@ -616,7 +635,7 @@
     </main>
 
     <footer class="app-footer">
-      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.3</span>
+      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.5</span>
     </footer>
     <button id="resetCalendar" class="reset-btn">🔴 Réinitialiser les cases</button>
   </div>
@@ -703,8 +722,12 @@
       },
       {
         day: 7,
-        title: "Jeu du 7 décembre",
-        description: "Jeu à définir.",
+        title: "Darksiders Warmastered Edition",
+        description:
+          "L'un des tout premiers jeux que j'ai faits en stream YouTube & Twitch ! (Et que je n'ai pas fini évidemment... La nostalgie !)<br><br>" +
+          "Darksiders Warmastered Edition est la version remasterisée du premier Darksiders, un jeu d’action-aventure où tu incarnes War, l’un des Quatre Cavaliers de l’Apocalypse, accusé à tort d’avoir déclenché la fin du monde trop tôt. " +
+          "Dépossédé de ses pouvoirs, il retourne sur une Terre ravagée pour se frayer un chemin au milieu des anges et des démons, chercher la vérité et se venger. " +
+          "Cette édition améliorée propose des graphismes retravaillés, des textures en haute résolution et un framerate plus fluide, tout en conservant le mélange de combats nerveux, d’exploration et d’énigmes qui a fait le succès du jeu.",
         twitchUrl: "https://www.twitch.tv/arqueftx"
       },
       {
@@ -882,6 +905,9 @@
 
       if (!isLocked && openedDays.includes(entry.day)) {
         card.classList.add(openedClass);
+        if (entry.day === 7) {
+          card.classList.add("d7-anim");
+        }
       }
 
       card.addEventListener("click", () => {
@@ -893,7 +919,18 @@
         }
 
         card.classList.add(openedClass);
+
+        // Effet spécial pour la case du 7 décembre
+        if (entry.day === 7) {
+          card.classList.add("d7-anim");
+          // On enlève le flou + tremblement après ~3.5s
+          setTimeout(() => {
+            card.classList.remove("d7-anim");
+          }, 3500);
+        }
+
         openModal(entry);
+
         const titleEl = card.querySelector(".day-title");
         if (titleEl && !isSpecial) {
           titleEl.textContent = entry.title;

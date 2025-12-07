@@ -636,7 +636,7 @@
     </main>
 
     <footer class="app-footer">
-      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.6</span>
+      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.3.0</span>
     </footer>
     <button id="resetCalendar" class="reset-btn">🔴 Réinitialiser les cases</button>
   </div>
@@ -928,9 +928,23 @@
       return card;
     }
 
+    // Lettres / indice à afficher pour certains jours
+    const specialMarkers = {
+      8: "P",
+      9: "S",
+      10: "A",
+      11: "N",
+      12: "I",
+      13: "S",
+      14: "1"
+    };
+
     function formatDate(day) {
-      if (day === 1) return "1er déc.";
-      return `${day} déc.`;
+      let base = (day === 1) ? "1er déc." : `${day} déc.`;
+      if (specialMarkers[day]) {
+        base += ` (${specialMarkers[day]})`;
+      }
+      return base;
     }
     
     function buildCalendar() {

@@ -538,7 +538,8 @@
     transform: scale(1.03);
   }
 
-  @keyframes shake-card {
+  /* Animation spéciale pour la modal du 7 décembre */
+  @keyframes shake-modal {
     0%   { transform: translateX(0); }
     20%  { transform: translateX(-3px); }
     40%  { transform: translateX(3px); }
@@ -546,14 +547,14 @@
     80%  { transform: translateX(2px); }
     100% { transform: translateX(0); }
   }
-  
-  .day-card.d7-anim {
-    animation: shake-card 0.5s ease-in-out infinite;
+
+  .modal.d7-anim {
+    animation: shake-modal 0.5s ease-in-out infinite;
   }
-  
-  .day-card.d7-anim .day-number,
-  .day-card.d7-anim .day-title,
-  .day-card.d7-anim .day-tag {
+
+  .modal.d7-anim .modal-title-block,
+  .modal.d7-anim .modal-tag,
+  .modal.d7-anim .modal-body {
     filter: blur(4px);
   }
 
@@ -635,7 +636,7 @@
     </main>
 
     <footer class="app-footer">
-      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.5</span>
+      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.2.6</span>
     </footer>
     <button id="resetCalendar" class="reset-btn">🔴 Réinitialiser les cases</button>
   </div>
@@ -905,9 +906,6 @@
 
       if (!isLocked && openedDays.includes(entry.day)) {
         card.classList.add(openedClass);
-        if (entry.day === 7) {
-          card.classList.add("d7-anim");
-        }
       }
 
       card.addEventListener("click", () => {
@@ -919,16 +917,6 @@
         }
 
         card.classList.add(openedClass);
-
-        // Effet spécial pour la case du 7 décembre
-        if (entry.day === 7) {
-          card.classList.add("d7-anim");
-          // On enlève le flou + tremblement après ~3.5s
-          setTimeout(() => {
-            card.classList.remove("d7-anim");
-          }, 3500);
-        }
-
         openModal(entry);
 
         const titleEl = card.querySelector(".day-title");
@@ -961,6 +949,7 @@
     const modalBodyEl = document.getElementById("modal-body");
     const modalHintEl = document.getElementById("modal-hint");
     const modalTwitchBtn = document.getElementById("modal-twitch-btn");
+    const modalEl = document.querySelector(".modal");
 
     function openModal(entry) {
       const isSpecial = Boolean(entry.special);
@@ -982,6 +971,16 @@
 
       modalBackdrop.classList.add("visible");
       modalBackdrop.setAttribute("aria-hidden", "false");
+
+      // Effet spécial uniquement pour le 7 décembre
+      if (entry.day === 7 && modalEl) {
+        modalEl.classList.add("d7-anim");
+        setTimeout(() => {
+          modalEl.classList.remove("d7-anim");
+        }, 3500);
+      } else if (modalEl) {
+        modalEl.classList.remove("d7-anim");
+      }
     }
 
     function openSecretPopup() {

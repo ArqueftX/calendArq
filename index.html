@@ -558,6 +558,64 @@
     filter: blur(4px);
   }
 
+  .end-banner {
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.98);
+    border-radius: 1rem;
+    border: 1px solid rgba(251, 191, 36, 0.7);
+    padding: 0.9rem 1rem 0.9rem 1rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    position: relative;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .end-banner-main {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .end-banner-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .end-banner-highlight {
+    color: #fde68a;
+    font-weight: 500;
+  }
+
+  .end-banner-close {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0.15rem;
+    border-radius: 999px;
+    position: absolute;
+    top: 0.45rem;
+    right: 0.5rem;
+    transition: background 0.15s ease-out, color 0.15s ease-out;
+  }
+
+  .end-banner-close:hover {
+    background: rgba(15, 23, 42, 0.95);
+    color: var(--text);
+  }
+
+  .end-banner-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.7);
+    color: #facc15;
+    align-self: flex-start;
+    margin-top: 0.1rem;
+  }
+
   @media (max-width: 600px) {
     .app {
       padding: 1.15rem 1rem 1.6rem;
@@ -612,6 +670,25 @@
       </div>
     </header>
 
+    <div id="endBanner" class="end-banner">
+      <div class="end-banner-main">
+        <div class="end-banner-title">
+          🎄 Le CalendArq est terminé... jusqu’à l’année prochaine !
+        </div>
+        <div>
+          🏆 <span class="end-banner-highlight">Souy0n</span> a remporté le trophée du <strong>Sapin Caché</strong>.<br>
+          🎁 <span class="end-banner-highlight">Don_Marco_TV</span> a gagné le tirage au sort du jeu d’une valeur d’environ 50€.<br><br>
+          Merci à toutes et tous d’avoir participé à cette édition. Rendez-vous au prochain CalendArq !
+        </div>
+      </div>
+      <div class="end-banner-badge">
+        Édition terminée
+      </div>
+      <button id="endBanner-close" class="end-banner-close" aria-label="Fermer le message">
+        ✕
+      </button>
+    </div>
+
     <main>
       <div class="calendar-header">
         <div class="calendar-header-title">
@@ -636,7 +713,7 @@
     </main>
 
     <footer class="app-footer">
-      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.4.6</span>
+      CalendArq – calendrier de l'Avent pour streams Twitch. <span>v1.4.7</span>
     </footer>
     <button id="resetCalendar" class="reset-btn">🔴 Réinitialiser les cases</button>
   </div>
@@ -1101,20 +1178,15 @@
         location.reload();
       }
     });
+
+    const endBanner = document.getElementById("endBanner");
+    const endBannerClose = document.getElementById("endBanner-close");
+
+    if (endBanner && endBannerClose) {
+      endBannerClose.addEventListener("click", () => {
+        endBanner.style.display = "none";
+      });
+    }
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
